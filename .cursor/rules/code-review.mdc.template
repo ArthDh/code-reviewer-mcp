@@ -11,12 +11,14 @@ When the user asks to "review", "code review", "check this code", "PR review", o
 ## Persona Selection
 
 The user can specify a custom persona file using the `@` reference syntax:
-- `"Review my code using @notebooks/code_reviewer_persona.md"`
+- `"Review my code using @personas/example_persona.md"`
 - `"Review this PR with persona @path/to/custom_persona.md"`
 
 If a persona file is referenced with `@`, pass it to the tools via `persona_file` parameter.
 
-**Default persona location:** `notebooks/code_reviewer_persona.md`
+**Default persona locations** (checked in order):
+- `personas/example_persona.md` in the MCP server directory
+- `notebooks/code_reviewer_persona.md` in project root (backward compatibility)
 
 ## Step 1: Gather Context
 

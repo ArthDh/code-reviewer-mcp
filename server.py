@@ -30,8 +30,11 @@ logger = logging.getLogger(__name__)
 # Initialize FastMCP server
 mcp = FastMCP("code-reviewer")
 
-# Default persona file location (relative to repo root)
-DEFAULT_PERSONA_PATH = "notebooks/code_reviewer_persona.md"
+# Default persona file locations (checked in order)
+DEFAULT_PERSONA_PATHS = [
+    "personas/example_persona.md",  # In MCP server directory
+    "notebooks/code_reviewer_persona.md",  # In project root (backward compatibility)
+]
 
 # ============================================================================
 # CODE REVIEWER PERSONA (Embedded)
@@ -128,14 +131,29 @@ def load_persona(
         The persona content as a string.
     """
     if not persona_file:
-        # Try to find the default persona file
+        # Try to find a default persona file (check multiple locations)
         cwd = working_directory or str(Path.cwd())
-        repo_root = get_repo_root(cwd)
-        if repo_root:
-            default_path = Path(repo_root) / DEFAULT_PERSONA_PATH
+        
+        # First, check in the MCP server directory (personas/)
+        server_dir = Path(__file__).parent
+        for default_path_str in DEFAULT_PERSONA_PATHS:
+            # Try relative to server directory first
+            default_path = server_dir / default_path_str
             if default_path.exists():
                 persona_file = str(default_path)
                 logger.info(f"Using default persona file: {persona_file}")
+                break
+        
+        # If not found, check in project root (backward compatibility)
+        if not persona_file:
+            repo_root = get_repo_root(cwd)
+            if repo_root:
+                for default_path_str in DEFAULT_PERSONA_PATHS:
+                    default_path = Path(repo_root) / default_path_str
+                    if default_path.exists():
+                        persona_file = str(default_path)
+                        logger.info(f"Using default persona file: {persona_file}")
+                        break
     
     if persona_file:
         # Resolve relative paths

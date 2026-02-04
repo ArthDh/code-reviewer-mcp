@@ -29,10 +29,15 @@ The server exposes 7 tools:
 All review tools accept a `persona_file` parameter to use a custom reviewer persona:
 
 ```
-persona_file: "notebooks/code_reviewer_persona.md"
+persona_file: "personas/example_persona.md"
 ```
 
-**Default location:** `notebooks/code_reviewer_persona.md` (auto-detected in repo root)
+**Default locations** (checked in order):
+1. `personas/example_persona.md` in the MCP server directory
+2. `notebooks/code_reviewer_persona.md` in your project root (for backward compatibility)
+3. Embedded default persona (if no file found)
+
+**Example persona:** See `personas/example_persona.md` for a complete example of a reviewer persona.
 
 ## Installation
 
@@ -128,9 +133,9 @@ When you ask for a code review, the Cursor rule instructs the AI on:
 
 **With custom persona (using @ reference):**
 ```
-"Review my code using @notebooks/code_reviewer_persona.md"
+"Review my code using @personas/example_persona.md"
 "Review this file using the persona at @path/to/strict_reviewer.md"
-"Generate a review report with @notebooks/code_reviewer_persona.md"
+"Generate a review report with @personas/example_persona.md"
 ```
 
 The `@file` syntax in Cursor expands the file reference, making it easy to 
@@ -162,8 +167,12 @@ The rule provides:
 ### How Persona Selection Works
 
 1. **Explicit selection**: Pass `persona_file` parameter with the path
-2. **Default location**: Auto-detects `notebooks/code_reviewer_persona.md` in repo root
+2. **Default locations** (checked in order):
+   - `personas/example_persona.md` in the MCP server directory
+   - `notebooks/code_reviewer_persona.md` in your project root (for backward compatibility)
 3. **Embedded fallback**: Uses built-in persona if no file found
+
+**Example persona:** See `personas/example_persona.md` for a complete example based on real code review patterns.
 
 ### Creating a Custom Persona
 
@@ -192,10 +201,13 @@ Create a markdown file with your review standards. Example structure:
 
 ### Switching Personas
 
-You can have multiple persona files for different contexts:
-- `personas/strict_reviewer.md` - For production code
-- `personas/junior_friendly.md` - Educational, more explanatory
-- `personas/security_focused.md` - Emphasis on security patterns
+You can have multiple persona files for different contexts. Store them in the `personas/` directory:
+- `personas/example_persona.md` - Example persona (included with this repo)
+- `personas/strict_reviewer.md` - For production code (create your own)
+- `personas/junior_friendly.md` - Educational, more explanatory (create your own)
+- `personas/security_focused.md` - Emphasis on security patterns (create your own)
+
+Start with `personas/example_persona.md` and customize it for your team's needs.
 
 ## Default Review Standards
 
