@@ -1,0 +1,14 @@
+[project]
+name = "code-reviewer-mcp"
+version = "1.0.0"
+description = "MCP server for code reviews based on team persona"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.2.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+export = [
+    "requests>=2.31.0",
+]

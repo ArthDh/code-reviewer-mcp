@@ -1,0 +1,86 @@
+---
+description: Code review trigger - activates when user asks to review code or PR
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Code Review Mode
+
+When the user asks to "review", "code review", "check this code", "PR review", or similar:
+
+## Persona Selection
+
+The user can specify a custom persona file using the `@` reference syntax:
+- `"Review my code using @notebooks/code_reviewer_persona.md"`
+- `"Review this PR with persona @path/to/custom_persona.md"`
+
+If a persona file is referenced with `@`, pass it to the tools via `persona_file` parameter.
+
+**Default persona location:** `notebooks/code_reviewer_persona.md`
+
+## Step 1: Gather Context
+
+Use the `code-reviewer` MCP tools to analyze the branch:
+
+1. **Get changed files**: Use `get_changed_files` to see what's modified
+2. **Get the diff**: Use `get_branch_diff` to see actual changes
+3. **Load persona**: Use `get_persona` with the specified persona file
+4. **Review the diff**: Use `review_diff` with the `persona_file` parameter
+
+## Step 2: Apply Review Standards
+
+Review ALL code changes against the standards defined in the persona file. The persona file will contain specific standards for:
+
+- Type safety (type hints, modern syntax)
+- Documentation (file headers, docstrings)
+- Code organization (imports, constants, naming)
+- Data structures (dataclasses vs tuples, TypedDict)
+- Error handling (specific exceptions, edge cases)
+- Code style (ternaries, f-strings, commented code)
+- Architecture patterns
+- Testing standards
+
+## Step 3: Output Format
+
+Structure your review as:
+
+```markdown
+## Code Review: [Branch Name]
+
+### Summary
+[Brief overview of changes and overall assessment]
+
+### Critical Issues 🔴
+[Must fix before merge]
+
+### Warnings 🟡
+[Should fix, may cause issues]
+
+### Suggestions 💡
+[Improvements that follow team standards]
+
+### Questions ❓
+[Clarifications needed]
+
+### Praise ✅
+[What was done well]
+```
+
+For each issue, include:
+- **File:Line** reference
+- **Issue** description
+- **Suggestion** with code example when helpful
+
+## Step 4: Be Educational
+
+- Explain WHY each suggestion matters
+- Reference existing patterns in the codebase when applicable
+- Use the exact phrases from the persona when they apply
+
+## Integration with Bitbucket (Optional)
+
+If Bitbucket MCP is configured, you can post comments directly to PRs:
+
+1. Generate review using `review_diff` or `generate_review_report`
+2. Use Bitbucket MCP `add_pr_comment` to post general or inline comments
+3. For inline comments, use `path` and `line` parameters
